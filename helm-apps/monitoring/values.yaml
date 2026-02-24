@@ -1,0 +1,187 @@
+# kube-prometheus-stack Values
+# Prometheus + Grafana + Alertmanager
+
+# Disable default ingress - we use Traefik IngressRoute
+defaultRules:
+  create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    configReloaders: true
+    general: true
+    k8sContainerCpuUsageSecondsTotal: true
+    k8sContainerMemoryCache: true
+    k8sContainerMemoryRss: true
+    k8sContainerMemorySwap: true
+    k8sContainerResource: true
+    k8sPodOwner: true
+    kubeApiserverAvailability: true
+    kubeApiserverBurnrate: true
+    kubeApiserverHistogram: true
+    kubeApiserverSlos: true
+    kubeControllerManager: true
+    kubelet: true
+    kubeProxy: true
+    kubePrometheusGeneral: true
+    kubePrometheusNodeRecording: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    kubeSchedulerAlerting: true
+    kubeSchedulerRecording: true
+    kubeStateMetrics: true
+    network: true
+    node: true
+    nodeExporterAlerting: true
+    nodeExporterRecording: true
+    prometheus: true
+    prometheusOperator: true
+
+# Alertmanager configuration
+alertmanager:
+  enabled: true
+  ingress:
+    enabled: false
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+
+# Grafana configuration
+grafana:
+  enabled: true
+  
+  # Use external secret for admin credentials
+  admin:
+    existingSecret: grafana-admin-secret
+    userKey: admin-user
+    passwordKey: admin-password
+  
+  # Disable default ingress - we use Traefik IngressRoute
+  ingress:
+    enabled: false
+  
+  # Persistence
+  persistence:
+    enabled: true
+    size: 10Gi
+    accessModes:
+      - ReadWriteOnce
+  
+  # Grafana configuration
+  grafana.ini:
+    server:
+      domain: grafana.cedevapp.com
+      root_url: "https://grafana.cedevapp.com"
+    security:
+      cookie_secure: false
+    users:
+      allow_sign_up: false
+
+  # Default datasources (Prometheus)
+  sidecar:
+    dashboards:
+      enabled: true
+      searchNamespace: ALL
+    datasources:
+      enabled: true
+
+# Prometheus configuration
+prometheus:
+  enabled: true
+  ingress:
+    enabled: false
+  prometheusSpec:
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+    # Resource limits
+    resources:
+      requests:
+        memory: 512Mi
+        cpu: 200m
+      limits:
+        memory: 2Gi
+        cpu: 1000m
+
+# Prometheus Operator
+prometheusOperator:
+  enabled: true
+
+# Node Exporter for node metrics
+nodeExporter:
+  enabled: true
+
+# Kube State Metrics
+kubeStateMetrics:
+  enabled: true
+
+# Disable components not needed on k3s
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+kubeEtcd:
+  enabled: false
+
+# Extra manifests for Traefik IngressRoutes
+extraManifests:
+  # Grafana IngressRoute
+  - apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+      name: grafana
+      namespace: monitoring
+    spec:
+      entryPoints:
+        - web
+      routes:
+        - match: Host(`grafana.cedevapp.com`)
+          kind: Rule
+          services:
+            - name: monitoring-grafana
+              port: 80
+  
+  # Prometheus IngressRoute (optional - for direct access)
+  - apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+      name: prometheus
+      namespace: monitoring
+    spec:
+      entryPoints:
+        - web
+      routes:
+        - match: Host(`prometheus.cedevapp.com`)
+          kind: Rule
+          services:
+            - name: monitoring-kube-prometheus-prometheus
+              port: 9090
+  
+  # Alertmanager IngressRoute (optional)
+  - apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+      name: alertmanager
+      namespace: monitoring
+    spec:
+      entryPoints:
+        - web
+      routes:
+        - match: Host(`alertmanager.cedevapp.com`)
+          kind: Rule
+          services:
+            - name: monitoring-kube-prometheus-alertmanager
+              port: 9093
