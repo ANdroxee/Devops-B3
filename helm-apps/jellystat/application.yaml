@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jellystat
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    # Helm chart from Git
+    - repoURL: https://github.com/djjudas21/charts.git
+      path: charts/jellystat
+      targetRevision: main
+      helm:
+        valueFiles:
+          - $values/helm-apps/jellystat/values.yaml
+    # Values from your repo
+    - repoURL: git@github.com:ANdroxee/Devops-B3.git
+      targetRevision: HEAD
+      ref: values
+    # IngressRoute from your repo
+    - repoURL: git@github.com:ANdroxee/Devops-B3.git
+      targetRevision: HEAD
+      path: helm-apps/jellystat
+      directory:
+        include: "ingressroute.yaml"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: jellyfin
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

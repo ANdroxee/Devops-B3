@@ -1,0 +1,43 @@
+# Jellystat Helm Chart Values
+
+image:
+  repository: cyfershepard/jellystat
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+jwtSecret: "placeholder"
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: false
+
+postgresql:
+  enabled: true
+  image:
+    repository: bitnamilegacy/postgresql
+  auth:
+    postgresPassword: ""
+    username: jellystat
+    password: ""
+    database: jellystat
+    existingSecret: jellystat-postgres-secret
+    secretKeys:
+      adminPasswordKey: postgres-password
+      userPasswordKey: password
+  primary:
+    persistence:
+      enabled: true
+      size: 5Gi
+
+# Resources
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "50m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
