@@ -96,9 +96,6 @@ users:
     shell: /bin/bash
     sudo: ['ALL=(ALL) NOPASSWD:ALL']
     lock_passwd: false
-    ssh_authorized_keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGxMk3/ThydPMeymty0bZwbuX98Grs7KMCUIIOpCmTMp xor_fakers@AsusXor
-
 ssh_pwauth: true
 disable_root: false
 
