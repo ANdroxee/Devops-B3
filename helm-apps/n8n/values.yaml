@@ -1,0 +1,77 @@
+# n8n Helm Chart Values
+
+image:
+  repository: n8nio/n8n
+  pullPolicy: IfNotPresent
+
+ingress:
+  enabled: false
+
+main:
+  config:
+    generic:
+      timezone: "Europe/Paris"
+    n8n:
+      host: "n8n.cedevapp.com"
+      protocol: "https"
+
+  extraEnv:
+    N8N_ENCRYPTION_KEY:
+      valueFrom:
+        secretKeyRef:
+          name: n8n-secrets
+          key: N8N_ENCRYPTION_KEY
+
+  persistence:
+    enabled: true
+    type: dynamic
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi
+
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  deploymentStrategy:
+    type: "Recreate"
+
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
+  replicaCount: 1
+
+worker:
+  enabled: false
+
+webhook:
+  enabled: false
+
+valkey:
+  enabled: false
+
+extraManifests:
+  - apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+      name: n8n-server
+    spec:
+      entryPoints:
+        - web
+      routes:
+        - match: Host(`n8n.cedevapp.com`)
+          kind: Rule
+          services:
+            - name: n8n
+              port: 80
