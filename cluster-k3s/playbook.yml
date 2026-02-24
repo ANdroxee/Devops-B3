@@ -1,0 +1,62 @@
+---
+- name: Installation du cluster K3s - Master
+  hosts: master
+  become: true
+  vars:
+      k3s_token_file: /var/lib/rancher/k3s/server/node-token
+  tasks:
+      - name: Mettre à jour les paquets
+        ansible.builtin.apt:
+            update_cache: yes
+            upgrade: yes
+
+      - name: Installer les dépendances
+        ansible.builtin.apt:
+            name:
+                - curl
+                - apt-transport-https
+            state: present
+
+      - name: Installer le serveur K3s
+        ansible.builtin.shell: |
+            curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION={{ k3s_version }} sh -
+        args:
+            creates: /usr/local/bin/k3s
+
+      - name: Définir l'URL du serveur K3s
+        ansible.builtin.set_fact:
+            k3s_server_url: "https://{{ ansible_host }}:6443"
+
+      - name: Récupérer le token du cluster
+        ansible.builtin.slurp:
+            src: "{{ k3s_token_file }}"
+        register: k3s_token_raw
+
+      - name: Définir le token en variable
+        ansible.builtin.set_fact:
+            k3s_token: "{{ k3s_token_raw.content | b64decode | trim }}"
+
+- name: Installation du cluster K3s - Workers
+  hosts: workers
+  become: true
+  vars:
+      k3s_token: "{{ hostvars[groups['master'][0]]['k3s_token'] }}"
+      k3s_server_url: "{{ hostvars[groups['master'][0]]['k3s_server_url'] }}"
+  tasks:
+      - name: Mettre à jour les paquets
+        ansible.builtin.apt:
+            update_cache: yes
+            upgrade: yes
+
+      - name: Installer les dépendances
+        ansible.builtin.apt:
+            name:
+                - curl
+                - apt-transport-https
+            state: present
+
+      - name: Joindre le nœud au cluster K3s
+        ansible.builtin.shell: |
+            curl -sfL https://get.k3s.io | K3S_URL={{ k3s_server_url }} K3S_TOKEN={{ k3s_token }} INSTALL_K3S_VERSION={{ k3s_version }} sh -
+        args:
+            creates: /usr/local/bin/k3s-agent
