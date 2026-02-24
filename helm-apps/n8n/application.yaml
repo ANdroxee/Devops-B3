@@ -6,13 +6,13 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://8gears.github.io/n8n-helm-chart
-      chart: n8n
+    - repoURL: https://github.com/8gears/n8n-helm-chart.git
+      path: charts/n8n
       targetRevision: 2.0.1
       helm:
         valueFiles:
           - $values/helm-apps/n8n/values.yaml
-    - repoURL: https://github.com/ANdroxee/Devops-B3.git
+    - repoURL: git@github.com:ANdroxee/Devops-B3.git
       targetRevision: HEAD
       ref: values
   destination:
