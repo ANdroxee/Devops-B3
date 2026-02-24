@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: oci://8gears.container-registry.com/library
+    - repoURL: https://8gears.github.io/n8n-helm-chart
       chart: n8n
-      targetRevision: 1.0.0
+      targetRevision: 2.0.1
       helm:
         valueFiles:
           - $values/helm-apps/n8n/values.yaml
