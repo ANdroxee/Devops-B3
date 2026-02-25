@@ -177,18 +177,18 @@ spec:
     spec:
       containers:
         - name: jellyfin-exporter
-          image: ghcr.io/mdziekon/jellyfin-prometheus-exporter:latest
-          ports:
-            - containerPort: 9594
-              name: metrics
+          image: rebelcore/jellyfin-exporter:latest
           env:
-            - name: JELLYFIN_URL
+            - name: JELLYFIN_ADDRESS
               value: "https://movies.cedevapp.com"
-            - name: JELLYFIN_API_KEY
+            - name: JELLYFIN_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: jellyfin-exporter-secret
                   key: api-key
+          ports:
+            - containerPort: 9594
+              name: metrics
           resources:
             requests:
               memory: "64Mi"
