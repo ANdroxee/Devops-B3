@@ -1,7 +1,6 @@
 # kube-prometheus-stack Values
 # Prometheus + Grafana + Alertmanager
 
-# Disable default ingress - we use Traefik IngressRoute
 defaultRules:
   create: true
   rules:
@@ -38,7 +37,6 @@ defaultRules:
     prometheus: true
     prometheusOperator: true
 
-# Alertmanager configuration
 alertmanager:
   enabled: true
   ingress:
@@ -56,7 +54,6 @@ alertmanager:
 grafana:
   enabled: true
   
-  # Use external secret for admin credentials
   admin:
     existingSecret: grafana-admin-secret
     userKey: admin-user
@@ -97,6 +94,12 @@ prometheus:
   ingress:
     enabled: false
   prometheusSpec:
+    additionalScrapeConfigs: |
+      - job_name: jellyfin-exporter
+        scrape_interval: 15s
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['10.0.20.12:9594']
     retention: 15d
     storageSpec:
       volumeClaimTemplate:
