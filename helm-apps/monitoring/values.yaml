@@ -41,7 +41,29 @@ alertmanager:
   enabled: true
   ingress:
     enabled: false
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['namespace', 'alertname']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'discord'
+      routes:
+        - receiver: 'discord'
+          matchers:
+            - alertname != "Watchdog"
+    receivers:
+      - name: 'null'
+      - name: 'discord'
+        discord_configs:
+          - webhook_url_file: '/etc/alertmanager/secrets/alertmanager-discord-secret/webhook-url'
+            title: '{{ template "discord.default.title" . }}'
+            message: '{{ template "discord.default.message" . }}'
   alertmanagerSpec:
+    secrets:
+      - alertmanager-discord-secret
     storage:
       volumeClaimTemplate:
         spec:
