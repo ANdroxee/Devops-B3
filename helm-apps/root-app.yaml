@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: 'git@github.com:ANdroxee/Devops-B3.git'
     path: helm-apps/
-    targetRevision: HEAD
+    targetRevision: aaf09ab
     directory:
       recurse: true
       include: "*/application.yaml"
