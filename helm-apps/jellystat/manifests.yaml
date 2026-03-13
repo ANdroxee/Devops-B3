@@ -1,5 +1,4 @@
 ---
-# PostgreSQL PVC
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -12,7 +11,6 @@ spec:
     requests:
       storage: 5Gi
 ---
-# PostgreSQL Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,7 +56,6 @@ spec:
           persistentVolumeClaim:
             claimName: jellystat-postgres-pvc
 ---
-# PostgreSQL Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -71,7 +68,6 @@ spec:
     - port: 5432
       targetPort: 5432
 ---
-# Jellystat Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -130,7 +126,6 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
 ---
-# Jellystat Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -143,7 +138,6 @@ spec:
     - port: 3000
       targetPort: 3000
 ---
-# Traefik IngressRoute
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -159,7 +153,6 @@ spec:
         - name: jellystat
           port: 3000
 ---
-# Jellyfin Exporter Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -197,7 +190,6 @@ spec:
               memory: "128Mi"
               cpu: "100m"
 ---
-# Jellyfin Exporter Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -213,7 +205,6 @@ spec:
       targetPort: 9594
       name: metrics
 ---
-# ServiceMonitor for Prometheus
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

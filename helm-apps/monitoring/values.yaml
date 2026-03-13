@@ -52,7 +52,6 @@ alertmanager:
             requests:
               storage: 5Gi
 
-# Grafana configuration
 grafana:
   enabled: true
   
@@ -61,18 +60,15 @@ grafana:
     userKey: admin-user
     passwordKey: admin-password
   
-  # Disable default ingress - we use Traefik IngressRoute
   ingress:
     enabled: false
   
-  # Persistence
   persistence:
     enabled: true
     size: 10Gi
     accessModes:
       - ReadWriteOnce
   
-  # Grafana configuration
   grafana.ini:
     server:
       domain: grafana.cedevapp.com
@@ -82,7 +78,6 @@ grafana:
     users:
       allow_sign_up: false
 
-  # Default datasources (Prometheus)
   sidecar:
     dashboards:
       enabled: true
@@ -90,13 +85,11 @@ grafana:
     datasources:
       enabled: true
 
-# Prometheus configuration
 prometheus:
   enabled: true
   ingress:
     enabled: false
   prometheusSpec:
-    # Scrape ServiceMonitors from all namespaces
     serviceMonitorSelectorNilUsesHelmValues: false
     serviceMonitorNamespaceSelector: {}
     retention: 15d
@@ -107,7 +100,6 @@ prometheus:
           resources:
             requests:
               storage: 50Gi
-    # Resource limits
     resources:
       requests:
         memory: 512Mi
@@ -116,19 +108,15 @@ prometheus:
         memory: 2Gi
         cpu: 1000m
 
-# Prometheus Operator
 prometheusOperator:
   enabled: true
 
-# Node Exporter for node metrics
 nodeExporter:
   enabled: true
 
-# Kube State Metrics
 kubeStateMetrics:
   enabled: true
 
-# Disable components not needed on k3s
 kubeControllerManager:
   enabled: false
 kubeScheduler:
@@ -138,9 +126,7 @@ kubeProxy:
 kubeEtcd:
   enabled: false
 
-# Extra manifests for Traefik IngressRoutes
 extraManifests:
-  # Grafana IngressRoute
   - apiVersion: traefik.io/v1alpha1
     kind: IngressRoute
     metadata:
@@ -156,7 +142,6 @@ extraManifests:
             - name: monitoring-grafana
               port: 80
   
-  # Prometheus IngressRoute (optional - for direct access)
   - apiVersion: traefik.io/v1alpha1
     kind: IngressRoute
     metadata:
@@ -172,7 +157,6 @@ extraManifests:
             - name: monitoring-kube-prometheus-prometheus
               port: 9090
   
-  # Alertmanager IngressRoute (optional)
   - apiVersion: traefik.io/v1alpha1
     kind: IngressRoute
     metadata:

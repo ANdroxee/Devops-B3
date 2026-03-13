@@ -1,5 +1,4 @@
 ---
-# Jellyseerr PVC for config
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -12,7 +11,6 @@ spec:
     requests:
       storage: 5Gi
 ---
-# Jellyseerr Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -68,7 +66,6 @@ spec:
           persistentVolumeClaim:
             claimName: jellyseerr-config
 ---
-# Jellyseerr Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -81,7 +78,6 @@ spec:
     - port: 80
       targetPort: 5055
 ---
-# Traefik IngressRoute
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
