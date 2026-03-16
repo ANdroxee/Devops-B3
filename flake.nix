@@ -29,6 +29,8 @@
             k9s
             pre-commit
 
+            presenterm
+
             # opentofu
             # terraform
             # ansible
