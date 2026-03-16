@@ -42,7 +42,7 @@ Nous utilisons le pattern **"App of Apps"**.
 1. **L'Application Racine** (`root-app.yaml`) surveille le dossier `helm-apps/`.
 2. Elle déploie automatiquement toute nouvelle application définie.
 
-![](media/argocd.png)
+![image:width:75%](media/argocd.png)
 
 <!-- end_slide -->
 
@@ -88,6 +88,10 @@ kubectl create secret generic jellystat-secrets \
 
 # Outillage : Nix
 
+<!-- column_layout: [1, 1] -->
+
+<!-- column: 0 -->
+
 Utilisation de **Nix Flakes** pour garantir que tous les intervenants utilisent les mêmes versions des outils :
 
 * `kubectl`
@@ -96,6 +100,12 @@ Utilisation de **Nix Flakes** pour garantir que tous les intervenants utilisent 
 * ...
 
 Fini le "ça marche sur ma machine" !
+
+<!-- column: 1 -->
+
+![](media/nix.png)
+
+<!-- reset_layout -->
 
 <!-- end_slide -->
 
