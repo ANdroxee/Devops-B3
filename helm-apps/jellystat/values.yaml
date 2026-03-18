@@ -1,48 +1,41 @@
 image:
-  repository: cyfershepard/jellystat
+  repository: docker.io/cyfershepard/jellystat
   tag: latest
 
-service:
+cnpg:
   main:
-    enabled: true
-    ports:
-      main:
-        enabled: true
-        port: 3000
-        targetPort: 3000
+    enabled: false
 
 workload:
   main:
     podSpec:
       containers:
         main:
-          probes:
-            liveness:
-              path: /
-            readiness:
-              path: /
           env:
             TZ: Europe/Paris
-            POSTGRES_USER:
-              value: jellystat
-            POSTGRES_IP:
-              value: jellystat-postgres
-            POSTGRES_PORT:
-              value: "5432"
+            POSTGRES_USER: jellystat
             POSTGRES_PASSWORD:
-              valueFrom:
-                secretKeyRef:
-                  name: jellystat-secrets
-                  key: POSTGRES_PASSWORD
+              secretKeyRef:
+                name: jellystat-secrets
+                key: POSTGRES_PASSWORD
+            POSTGRES_IP: jellystat-postgres
+            POSTGRES_PORT: "5432"
             JWT_SECRET:
-              valueFrom:
-                secretKeyRef:
-                  name: jellystat-secrets
-                  key: JWT_SECRET
+              secretKeyRef:
+                name: jellystat-secrets
+                key: JWT_SECRET
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
 
-cnpg:
-  main:
-    enabled: false
+persistence:
+  backup:
+    enabled: true
+    mountPath: "/app/backend/backup-data"
 
 ingress:
   main:
@@ -53,15 +46,5 @@ ingress:
         paths:
           - path: /
             pathType: Prefix
-
-persistence:
-  backup:
-    enabled: false
-
-resources:
-  requests:
-    cpu: 50m
-    memory: 128Mi
-  limits:
-    cpu: 500m
-    memory: 512Mi
+    entryPoints:
+      - web

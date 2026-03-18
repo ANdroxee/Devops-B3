@@ -5,13 +5,16 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: oci://ghcr.io/seerr-team/helm-charts
-    chart: seerr
-    targetRevision: "2.2.3"
-    helm:
-      valueFiles:
-        - values.yaml
+  sources:
+    - repoURL: oci://oci.trueforge.org/truecharts
+      chart: jellyseerr
+      targetRevision: "13.17.2"
+      helm:
+        valueFiles:
+          - $values/helm-apps/jellyseerr/values.yaml
+    - repoURL: git@github.com:ANdroxee/Devops-B3.git
+      targetRevision: HEAD
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: jellyfin

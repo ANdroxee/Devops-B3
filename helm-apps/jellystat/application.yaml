@@ -5,13 +5,16 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: oci://oci.trueforge.org/truecharts
-    chart: jellystat
-    targetRevision: "6.8.0"
-    helm:
-      valueFiles:
-        - values.yaml
+  sources:
+    - repoURL: oci://oci.trueforge.org/truecharts
+      chart: jellystat
+      targetRevision: "6.17.2"
+      helm:
+        valueFiles:
+          - $values/helm-apps/jellystat/values.yaml
+    - repoURL: git@github.com:ANdroxee/Devops-B3.git
+      targetRevision: HEAD
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: jellyfin
