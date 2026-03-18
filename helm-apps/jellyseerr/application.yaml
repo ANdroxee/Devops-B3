@@ -7,7 +7,8 @@ spec:
   project: default
   sources:
     - repoURL: oci://oci.trueforge.org/truecharts/jellyseerr
-      targetRevision: "*"
+      chart: jellyseerr
+      targetRevision: "13.17.2"
       helm:
         valueFiles:
           - $values/helm-apps/jellyseerr/values.yaml
