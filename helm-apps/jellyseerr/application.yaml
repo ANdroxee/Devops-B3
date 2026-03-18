@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://bjw-s-labs.github.io/helm-charts
-    chart: loeken-at-home/jellyseerr
-    targetRevision: "3.1.0"
+    repoURL: oci://ghcr.io/seerr-team/helm-charts
+    chart: seerr
+    targetRevision: "2.2.3"
     helm:
       valueFiles:
         - values.yaml

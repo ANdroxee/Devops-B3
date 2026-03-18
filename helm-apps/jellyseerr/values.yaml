@@ -1,43 +1,40 @@
-controller:
-  type: deployment
-  replicas: 1
-
-pod:
-  metadata:
-    labels:
-      app: jellyseerr
-
 image:
+  registry: ghcr.io
   repository: fallenbagel/jellyseerr
   tag: 2.2.3
 
 service:
-  main:
-    ports:
-      main:
-        port: 5055
-        targetPort: 5055
+  type: ClusterIP
+  port: 80
 
-env:
-  TZ: Europe/Paris
-  LOG_LEVEL: info
-
-persistence:
-  config:
+config:
+  persistence:
     enabled: true
     existingClaim: jellyseerr-config
+    size: 5Gi
+    accessModes:
+      - ReadWriteOnce
 
 ingress:
-  main:
-    enabled: true
-    className: traefik
-    hosts:
-      - host: jellyseerr.cedevapp.com
-        paths:
-          - path: /
-            pathType: Prefix
-    entryPoints:
-      - web
+  enabled: true
+  ingressClassName: traefik
+  annotations: {}
+  hosts:
+    - host: jellyseerr.cedevapp.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+probes:
+  livenessProbe:
+    httpGet:
+      path: /
+      port: http
+  readinessProbe:
+    httpGet:
+      path: /
+      port: http
 
 resources:
   requests:
@@ -46,3 +43,9 @@ resources:
   limits:
     cpu: 1000m
     memory: 1Gi
+
+extraEnv:
+  - name: TZ
+    value: Europe/Paris
+  - name: LOG_LEVEL
+    value: info

@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://bjw-s-labs.github.io/helm-charts
-    chart: app-template
-    targetRevision: "3.1.0"
+    repoURL: oci://oci.trueforge.org/truecharts
+    chart: jellystat
+    targetRevision: "6.8.0"
     helm:
       valueFiles:
         - values.yaml
