@@ -9,14 +9,18 @@ author: DevOps Team
 Infrastructure Kubernetes K3s
 ===
 
-# Infrastructure Kubernetes K3s
+# Sommaire
 
 - Architecture du Cluster
 - IaC / Provisionning
 - Arborescence du Projet
-- GitOps / Flux de Déploiement
-- Applications installées
-- Gestion des Secrets
+- GitOps & Flux de Déploiement
+- Écosystème Applicatif
+- Observabilité
+- Stratégies de Déploiement
+- Sécurité & DevSecOps
+- Outillage (Nix)
+- Demo
 
 <!-- end_slide -->
 
@@ -42,65 +46,19 @@ Le cluster repose sur **K3s** avec des nœuds sous Ubuntu 24.04 LTS.
 
 # IaC
 
- - Pour le déploiement des machines du cluster nous utilisons terraform avec le provider Proxmox
-```
-└── terraform2
-    ├── main.tf
-    ├── terraform.tfvars
-    └── variables.tf
-```
+Pour le déploiement des machines du cluster nous utilisons terraform avec le provider Proxmox :
 
-- Variable de configuration du cluster
+<!-- column_layout: [1, 1] -->
 
-```terraform
-variable "pm_api_url" {
-  description = "URL de l'API Proxmox"
-  type        = string
-  default     = "https://IP_PROXMOX:8006/api2/json"
-}
+<!-- column: 0 -->
 
-variable "pm_api_token_id" {
-  description = "ID du token Proxmox au format user@realm!tokenid"
-  type        = string
-  sensitive   = true
-}
-```
+![image:width:50%](media/terraform.png)
 
-<!-- end_slide -->
+<!-- column: 1 -->
 
-<!-- font_size: 2 -->
+![image:width:50%](media/proxmox.png)
 
-- Utilisation des variables
-
-```terraform
-terraform {
-  required_providers {
-    proxmox = {
-      source  = "telmate/proxmox"
-      version = "3.0.2-rc04"
-    }
-  }
-}
-provider "proxmox" {
-  pm_api_url          = var.pm_api_url
-  pm_api_token_id     = var.pm_api_token_id
-  pm_api_token_secret = var.pm_api_token_secret
-  pm_tls_insecure     = true
-}
-```
-
-- Configuration des machines du cluster 
-```terraform
-vms = {
-  "master-k3s" = {
-    name           = "vm-master"
-    memory         = 10240
-    cores          = 5
-    network_bridge = "vmbr0"
-  }
-  ...
-}
-```
+<!-- reset_layout -->
 
 ### Documentation complète sur Github
 
@@ -120,10 +78,10 @@ Une structure claire pour la gestion Helm et ArgoCD :
 Devops-B3/
 ├── helm-apps/
 │   ├── root-app.yaml          # Application "App of Apps" racine
-│   ├── manifest-app/
+│   ├── jellyseerr/
 │   │   ├── application.yaml   # ArgoCD Application
 │   │   └── manifests.yaml    # Manifests Kubernetes (Deployment, Service, PVC, IngressRoute)
-│   └── helm-app/
+│   └── monitoring/
 │       ├── application.yaml   # ArgoCD Application via helm chart
 │       └── values.yaml       # Valeurs Helm
 ├── flake.nix # configuration nix
@@ -152,7 +110,8 @@ Nous utilisons le pattern **"App of Apps"**.
 Le cycle de vie d'une modification :
 
 1. **Push** sur la branche `main`.
-2. **Détection** automatique par ArgoCD.
+2. **CI (GitHub Actions)** : vérification du code et scan de sécurité (Trivy).
+3. **Détection** automatique par ArgoCD.
 3. **Synchronisation** des manifests sur le cluster.
 4. **Vérification** de l'état de santé des ressources.
 
@@ -162,13 +121,13 @@ Le cycle de vie d'une modification :
 
 <!-- font_size: 2 -->
 
-# Applications Déployées
+# Écosystème Applicatif
 
-Un écosystème complet de services :
+Nous hébergeons quelques services :
 
-* **Streaming & Media** : Jellyfin, Jellyseerr, Jellystat.
-* **Automation** : n8n.
-* **Observabilité** : Prometheus & Grafana.
+* **Jellyfin, Jellyseerr & Jellystat** : Plateforme de streaming, recommandations et statistiques.
+* **n8n** : Automatisation de vos flux de travail.
+* **Grafana, Prometheus, ...** : Observabilité
 
 ![](media/k9s.png)
 
@@ -176,18 +135,55 @@ Un écosystème complet de services :
 
 <!-- font_size: 2 -->
 
-# Gestion des Secrets
+# Observabilité
 
-Approche actuelle : **Secrets Opaques manuels**.
+Pour respecter la nécessité DevOps de "surveiller" son infrastructure :
 
-```bash
-kubectl create secret generic jellystat-secrets \
-  --namespace jellyfin \
-  --from-literal=POSTGRES_PASSWORD='***' \
-  --from-literal=JWT_SECRET='***'
-```
+<!-- column_layout: [1, 1] -->
 
-*Note : Des solutions comme HashiCorp Vault ou SOPS sont envisagées pour le futur.*
+<!-- column: 0 -->
+
+**Prometheus**
+Moteur de collecte de métriques. Il "scrape" l'état de notre cluster K3s (utilisation GPU, CPU, RAM) ainsi que de jellyfin via un exporter.
+
+![image:width:30%](media/prometheus.png)
+
+<!-- column: 1 -->
+
+**Grafana**
+Outil de visualisation. Offre des *Dashboards* permettant d'être proactif sur les incidents.
+
+![image:width:30%](media/grafana.png)
+
+<!-- reset_layout -->
+
+<!-- end_slide -->
+
+<!-- font_size: 2 -->
+
+# Stratégies de Déploiement
+
+Nos mises à jour se font sans coupure de service.
+
+* **Rolling Update (ArgoCD + Kubernetes)** :
+  1. L'image (ou la config) change dans Git.
+  2. Kubernetes déploie le *nouveau* Pod.
+  3. Il redirige le trafic, puis détruit l'*ancien* Pod.
+  -> Résultat : **Zéro-Downtime** (pas d'arrêt pour l'utilisateur).
+
+* *Evolution possible* : Déploiements incrémentaux **Canary** ou **Blue/Green** via *Argo Rollouts*.
+
+<!-- end_slide -->
+
+<!-- font_size: 2 -->
+
+# Sécurité & DevSecOps
+
+Nous intégrons la sécurité à plusieurs niveaux :
+
+* **CI (GitHub Actions) + Trivy** : Scan automatique des vulnérabilités et erreurs de configuration (IaC) à chaque Push/PR.
+* **Audit Kubernetes** : Utilisation de `kube-bench` pour vérifier la sécurité du cluster face aux standards.
+* **Gestion des secrets** : Manuel (Opaque) pour l'instant, avec évolution prévue vers Vault / SOPS.
 
 <!-- end_slide -->
 
@@ -253,6 +249,6 @@ Merci de votre attention !
 # Des questions ?
 
 # Sources
-* Sources : [GitHub Repo]
+* Sources : GitHub Repo - https://github.com/ANdroxee/Devops-B3
 * Documentation : [Kubernetes / ArgoCD / Helm]
-* Tout les outils utilisés sont open-source (voir README)
+* Tout les outils utilisés sont gratuits et open-source (voir README)
