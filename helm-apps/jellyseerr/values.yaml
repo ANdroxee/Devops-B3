@@ -32,11 +32,15 @@ persistence:
 ingress:
   main:
     enabled: true
-    className: traefik
+    ingressClassName: traefik
     hosts:
       - host: jellyseerr.cedevapp.com
         paths:
           - path: /
             pathType: Prefix
-    entryPoints:
-      - web
+    integrations:
+      traefik:
+        enabled: true
+        entrypoints:
+          - web
+        forceTLS: false
