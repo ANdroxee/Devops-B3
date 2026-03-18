@@ -4,8 +4,9 @@ image:
 
 cnpg:
   main:
-    enabled: false
+    enabled: true
     user: jellystat
+    database: jellystat
 
 workload:
   main:
