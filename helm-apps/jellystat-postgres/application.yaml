@@ -20,6 +20,14 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: jellyfin
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: jellystat-postgres
+      namespace: jellyfin
+      jsonPointers:
+        - /data/password
+        - /data/postgres-password
   syncPolicy:
     automated:
       prune: true
