@@ -1,0 +1,58 @@
+controller:
+  type: deployment
+  replicas: 1
+
+pod:
+  metadata:
+    labels:
+      app: jellystat
+
+image:
+  repository: cyfershepard/jellystat
+  tag: 1.1.8
+
+service:
+  main:
+    ports:
+      main:
+        port: 3000
+        targetPort: 3000
+
+env:
+  TZ: Europe/Paris
+  POSTGRES_USER:
+    value: jellystat
+  POSTGRES_IP:
+    value: jellystat-postgres
+  POSTGRES_PORT:
+    value: "5432"
+  POSTGRES_PASSWORD:
+    valueFrom:
+      secretKeyRef:
+        name: jellystat-secrets
+        key: POSTGRES_PASSWORD
+  JWT_SECRET:
+    valueFrom:
+      secretKeyRef:
+        name: jellystat-secrets
+        key: JWT_SECRET
+
+ingress:
+  main:
+    enabled: true
+    className: traefik
+    hosts:
+      - host: jellystat.cedevapp.com
+        paths:
+          - path: /
+            pathType: Prefix
+    entryPoints:
+      - web
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

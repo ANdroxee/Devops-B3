@@ -1,0 +1,48 @@
+controller:
+  type: deployment
+  replicas: 1
+
+pod:
+  metadata:
+    labels:
+      app: jellyseerr
+
+image:
+  repository: fallenbagel/jellyseerr
+  tag: 2.2.3
+
+service:
+  main:
+    ports:
+      main:
+        port: 5055
+        targetPort: 5055
+
+env:
+  TZ: Europe/Paris
+  LOG_LEVEL: info
+
+persistence:
+  config:
+    enabled: true
+    existingClaim: jellyseerr-config
+
+ingress:
+  main:
+    enabled: true
+    className: traefik
+    hosts:
+      - host: jellyseerr.cedevapp.com
+        paths:
+          - path: /
+            pathType: Prefix
+    entryPoints:
+      - web
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
