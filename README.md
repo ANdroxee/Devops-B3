@@ -22,21 +22,24 @@ Voir la documentation [ici](./IAC.md)
 Devops-B3/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml            # Pipeline CI (Lint & Scan Trivy)
+│       └── ci.yml                  # Pipeline CI (Lint & Scan Trivy)
 ├── helm-apps/
-│   ├── root-app.yaml          # Application "App of Apps" racine
+│   ├── root-app.yaml               # Application "App of Apps" racine
 │   ├── jellyseerr/
-│   │   ├── application.yaml   # ArgoCD Application pour Jellyseerr
-│   │   └── manifests.yaml    # Manifests Kubernetes (Deployment, Service, PVC, IngressRoute)
+│   │   ├── application.yaml        # ArgoCD Application (chart TrueForge OCI)
+│   │   └── values.yaml             # Valeurs Helm (image, ingress, persistence)
 │   ├── jellystat/
-│   │   ├── application.yaml  # ArgoCD Application pour Jellystat
-│   │   └── manifests.yaml    # Manifests (PostgreSQL, Jellystat, Exporter, ServiceMonitor)
+│   │   ├── application.yaml        # ArgoCD Application (chart bjw-s app-template)
+│   │   └── values.yaml             # Valeurs Helm (image, env, ingress)
+│   ├── jellystat-postgres/
+│   │   ├── application.yaml        # ArgoCD Application (chart Bitnami PostgreSQL)
+│   │   └── values.yaml             # Valeurs Helm (auth, persistence, resources)
 │   ├── monitoring/
-│   │   ├── application.yaml  # ArgoCD Application pour la stack monitoring
-│   │   └── values.yaml       # Valeurs Helm pour kube-prometheus-stack
+│   │   ├── application.yaml        # ArgoCD Application (kube-prometheus-stack)
+│   │   └── values.yaml             # Valeurs Helm pour kube-prometheus-stack
 │   └── n8n/
-│       ├── application.yaml   # ArgoCD Application pour n8n
-│       └── values.yaml       # Valeurs Helm pour n8n
+│       ├── application.yaml        # ArgoCD Application (chart n8n)
+│       └── values.yaml             # Valeurs Helm pour n8n
 └── README.md
 ```
 
@@ -151,13 +154,23 @@ On utilise une configuration Nix pour gérer les tools, histoire d'avoir tous le
 - [Nix Flake](https://github.com/NixOS/templates)
 - [Kube-Bench](https://github.com/aquasecurity/kube-bench)
 
-Charts et Images utilisés :
-- [n8n](https://github.com/8gears/n8n-helm-chart)
-- [prometheus](https://github.com/prometheus-community/helm-charts)
+Charts utilisés :
+- [Jellyseerr chart](https://truecharts.org/truetech/truecharts/charts/stable/jellyseerr/) — `oci://oci.trueforge.org/truecharts/jellyseerr`
+- [Jellystat chart](https://bjw-s-labs.github.io/helm-charts) — `bjw-s/app-template`
+- [Jellystat PostgreSQL](https://bitnami.com/stack/postgresql/helm) — `oci://registry-1.docker.io/bitnamicharts/postgresql`
+- [n8n chart](https://github.com/8gears/n8n-helm-chart)
+- [Prometheus Grafana Charts](https://github.com/prometheus-community/helm-charts)
+
+Apps & tools utilisés :
+- [n8n](https://github.com/n8n-io/n8n)
+- [prometheus](https://github.com/prometheus/prometheus)
 - [jellyfin](https://github.com/jellyfin/jellyfin)
 - [jellyseerr](https://github.com/seerr-team/seerr)
 - [jellystat](https://github.com/CyferShepard/Jellystat)
-- [n8n](https://github.com/n8n-io/n8n)
 - [grafana](https://github.com/grafana/grafana)
 - [prometheus](https://github.com/prometheus/prometheus)
 - [argocd](https://github.com/argoproj/argo-cd)
+- [kubectl](https://github.com/kubernetes/kubectl)
+- [k3s](https://github.com/k3s-io/k3s)
+- [kubernetes](https://github.com/kubernetes/kubernetes)
+- [helm](https://github.com/helm/helm)

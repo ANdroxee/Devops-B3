@@ -70,21 +70,27 @@ Pour le déploiement des machines du cluster nous utilisons terraform avec le pr
 
 Une structure claire pour la gestion Helm et ArgoCD :
 
-* **helm-apps/** : Contient toutes les définitions d'applications.
+* **helm-apps/** : Contient toutes les définitions d'applications (charts Helm uniquement).
 * **media/** : Assets et schémas d'architecture.
 * **flake.nix** : Environnement de développement reproductible.
 
 ```bash
 Devops-B3/
 ├── helm-apps/
-│   ├── root-app.yaml          # Application "App of Apps" racine
+│   ├── root-app.yaml               # Application "App of Apps" racine
 │   ├── jellyseerr/
-│   │   ├── application.yaml   # ArgoCD Application
-│   │   └── manifests.yaml    # Manifests Kubernetes (Deployment, Service, PVC, IngressRoute)
+│   │   ├── application.yaml        # ArgoCD Application (chart TrueForge OCI)
+│   │   └── values.yaml             # Valeurs Helm
+│   ├── jellystat/
+│   │   ├── application.yaml        # ArgoCD Application (bjw-s app-template)
+│   │   └── values.yaml             # Valeurs Helm
+│   ├── jellystat-postgres/
+│   │   ├── application.yaml        # ArgoCD Application (Bitnami PostgreSQL)
+│   │   └── values.yaml             # Valeurs Helm
 │   └── monitoring/
-│       ├── application.yaml   # ArgoCD Application via helm chart
-│       └── values.yaml       # Valeurs Helm
-├── flake.nix # configuration nix
+│       ├── application.yaml        # ArgoCD Application (kube-prometheus-stack)
+│       └── values.yaml             # Valeurs Helm
+├── flake.nix                       # configuration nix
 └── README.md
 ```
 
@@ -123,7 +129,7 @@ Le cycle de vie d'une modification :
 
 # Écosystème Applicatif
 
-Nous hébergeons quelques services :
+Nous hébergeons quelques services, tous déployés via **charts Helm** :
 
 * **Jellyfin, Jellyseerr & Jellystat** : Plateforme de streaming, recommandations et statistiques.
 * **n8n** : Automatisation de vos flux de travail.
