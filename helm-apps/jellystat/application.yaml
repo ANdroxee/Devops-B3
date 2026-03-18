@@ -8,7 +8,7 @@ spec:
   sources:
     - repoURL: oci://oci.trueforge.org/truecharts
       chart: jellystat
-      targetRevision: "6.17.2"
+      targetRevision: "*"
       helm:
         valueFiles:
           - $values/helm-apps/jellystat/values.yaml
