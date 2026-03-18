@@ -14,7 +14,6 @@ workload:
       containers:
         main:
           env:
-            TZ: Europe/Paris
             LOG_LEVEL: info
           resources:
             requests:

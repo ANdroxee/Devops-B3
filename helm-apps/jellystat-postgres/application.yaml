@@ -1,19 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: jellystat
+  name: jellystat-postgres
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   sources:
-    - repoURL: https://bjw-s-labs.github.io/helm-charts
-      chart: app-template
+    - repoURL: https://charts.bitnami.com/bitnami
+      chart: postgresql
       targetRevision: "*"
       helm:
         valueFiles:
-          - $values/helm-apps/jellystat/values.yaml
+          - $values/helm-apps/jellystat-postgres/values.yaml
     - repoURL: git@github.com:ANdroxee/Devops-B3.git
       targetRevision: HEAD
       ref: values

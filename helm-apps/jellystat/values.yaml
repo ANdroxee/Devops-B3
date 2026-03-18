@@ -1,45 +1,50 @@
-image:
-  repository: docker.io/cyfershepard/jellystat
-  tag: latest
-
-cnpg:
+controllers:
   main:
-    enabled: true
-    user: jellystat
-    database: jellystat
+    containers:
+      main:
+        image:
+          repository: cyfershepard/jellystat
+          tag: latest
+        env:
+          TZ: Europe/Paris
+          POSTGRES_USER: jellystat
+          POSTGRES_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: jellystat-postgres
+                key: password
+          POSTGRES_IP: jellystat-postgres
+          POSTGRES_PORT: "5432"
+          JWT_SECRET:
+            valueFrom:
+              secretKeyRef:
+                name: jellystat-secrets
+                key: JWT_SECRET
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
 
-workload:
+service:
   main:
-    podSpec:
-      containers:
-        main:
-          env:
-            TZ: Europe/Paris
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
-
-persistence:
-  backup:
-    enabled: true
-    mountPath: "/app/backend/backup-data"
+    controller: main
+    ports:
+      http:
+        port: 3000
 
 ingress:
   main:
-    enabled: true
-    ingressClassName: traefik
+    className: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
     hosts:
       - host: jellystat.cedevapp.com
         paths:
           - path: /
             pathType: Prefix
-    integrations:
-      traefik:
-        enabled: true
-        entrypoints:
-          - web
-        forceTLS: false
+            service:
+              identifier: main
+              port: http

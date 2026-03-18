@@ -1,0 +1,17 @@
+fullnameOverride: jellystat-postgres
+
+auth:
+  username: jellystat
+  database: jellystat
+
+primary:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  persistence:
+    enabled: true
+    size: 1Gi
