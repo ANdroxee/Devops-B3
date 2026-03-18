@@ -42,7 +42,7 @@ Nous utilisons le pattern **"App of Apps"**.
 1. **L'Application Racine** (`root-app.yaml`) surveille le dossier `helm-apps/`.
 2. Elle déploie automatiquement toute nouvelle application définie.
 
-![image:width:75%](media/argocd.png)
+![](media/argocd.png)
 
 <!-- end_slide -->
 
@@ -56,6 +56,8 @@ Le cycle de vie d'une modification :
 4. **Vérification** de l'état de santé des ressources.
 
 ![](media/argonaut.png)
+
+![](media/argo.png)
 
 <!-- end_slide -->
 
