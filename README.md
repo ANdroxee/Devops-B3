@@ -67,6 +67,18 @@ provider "proxmox" {
 
 ### Provisionning 
 
+Pour le provisionning des machines nous utilisons ansible pour l'installation du cluster 
+
+```
+├── cluster-k3s
+│   ├── all.yml
+│   ├── inventory
+│   │   └── hosts.ini
+│   ├── playbook.yml
+│   └── README.md
+└── README.md
+```
+
 ```yml
 k3s_version: "v1.30.1+k3s1"
 k3s_server_url: "https://{{ hostvars['master']['ansible_host'] }}:6443"
