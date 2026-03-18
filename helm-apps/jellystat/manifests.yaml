@@ -41,6 +41,10 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: jellystat-postgres-pvc
 ---
 apiVersion: v1
 kind: Service
