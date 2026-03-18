@@ -30,6 +30,10 @@
             pre-commit
 
             presenterm
+            
+            # pour l'export de la présentation en PDF
+            python313Packages.weasyprint
+            python313
 
             # opentofu
             # terraform

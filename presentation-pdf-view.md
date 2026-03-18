@@ -199,7 +199,6 @@ kubectl create secret generic jellystat-secrets \
 
 <!-- column: 0 -->
 
-
 Utilisation de **Nix Flakes** pour garantir que tous les intervenants utilisent les mêmes versions des outils :
 
 * `kubectl`
@@ -214,34 +213,6 @@ Fini le "ça marche sur ma machine" !
 ![image:width:70%](media/nix.png)
 
 <!-- reset_layout -->
-
-<!-- end_slide -->
-
-<!-- font_size: 2 -->
-
-DEMO
-===
-
-* quelques commandes de bases kube
-
----
-
-```bash +exec
-kubectl get pods -n jellyfin
-```
-
-<!-- end_slide -->
-
-<!-- font_size: 2 -->
-
-DEMO
-===
-
----
-
-```bash +exec
-kubectl get namespace
-```
 
 <!-- end_slide -->
 
