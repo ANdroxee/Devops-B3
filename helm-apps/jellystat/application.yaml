@@ -6,8 +6,7 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: oci://oci.trueforge.org/truecharts
-      chart: jellystat
+    - repoURL: oci://oci.trueforge.org/truecharts/jellystat
       targetRevision: "*"
       helm:
         valueFiles:
