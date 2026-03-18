@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://charts.bitnami.com/bitnami
+    - repoURL: oci://registry-1.docker.io/bitnamicharts/postgresql
       chart: postgresql
-      targetRevision: "*"
+      targetRevision: "18.5.8"
       helm:
         valueFiles:
           - $values/helm-apps/jellystat-postgres/values.yaml
