@@ -13,6 +13,8 @@ spec:
         skipDependencies: false
         valueFiles:
           - $values/helm-apps/monitoring/values.yaml
+        extraManifests:
+          - $values/helm-apps/monitoring/network-policy.yaml
     - repoURL: git@github.com:ANdroxee/Devops-B3.git
       targetRevision: HEAD
       ref: values

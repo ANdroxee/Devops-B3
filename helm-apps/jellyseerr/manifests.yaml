@@ -28,12 +28,24 @@ spec:
       labels:
         app: jellyseerr
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: jellyseerr
           image: fallenbagel/jellyseerr:2.2.3
           ports:
             - containerPort: 5055
               name: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: TZ
               value: "Europe/Paris"

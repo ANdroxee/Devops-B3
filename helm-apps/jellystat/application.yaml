@@ -10,7 +10,8 @@ spec:
     targetRevision: HEAD
     path: helm-apps/jellystat
     directory:
-      include: "manifests.yaml"
+      recurse: true
+      include: "*.yaml"
   destination:
     server: https://kubernetes.default.svc
     namespace: jellyfin

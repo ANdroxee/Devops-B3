@@ -15,7 +15,7 @@ main:
     n8n:
       host: "n8n.cedevapp.com"
       protocol: "https"
-      secure_cookie: "false"
+      secure_cookie: "true"
       trust_proxy: "true"
 
   extraEnv:

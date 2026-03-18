@@ -26,11 +26,23 @@ spec:
       labels:
         app: jellystat-postgres
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: postgres
           image: postgres:15-alpine
           ports:
             - containerPort: 5432
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            runAsUser: 999
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: POSTGRES_USER
               value: "jellystat"
@@ -89,6 +101,13 @@ spec:
           ports:
             - containerPort: 3000
               name: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: POSTGRES_USER
               value: "jellystat"
@@ -171,6 +190,13 @@ spec:
       containers:
         - name: jellyfin-exporter
           image: rebelcore/jellyfin-exporter:latest
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
           env:
             - name: JELLYFIN_ADDRESS
               value: "https://movies.cedevapp.com"

@@ -74,7 +74,7 @@ grafana:
       domain: grafana.cedevapp.com
       root_url: "https://grafana.cedevapp.com"
     security:
-      cookie_secure: false
+      cookie_secure: true
     users:
       allow_sign_up: false
 
