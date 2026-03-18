@@ -44,7 +44,7 @@ spec:
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
-            claimName: jellystat-postgres-pvc
+            claimName: data-jellystat-postgresql-0
 ---
 apiVersion: v1
 kind: Service
