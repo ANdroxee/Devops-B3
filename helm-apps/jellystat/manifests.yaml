@@ -85,6 +85,11 @@ spec:
       labels:
         app: jellystat
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: jellystat
           image: cyfershepard/jellystat:1.1.8
@@ -93,8 +98,7 @@ spec:
               name: http
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            runAsUser: 1000
+            readOnlyRootFilesystem: false
             capabilities:
               drop:
                 - ALL
@@ -161,78 +165,3 @@ spec:
       services:
         - name: jellystat
           port: 3000
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: jellyfin-exporter
-  namespace: jellyfin
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: jellyfin-exporter
-  template:
-    metadata:
-      labels:
-        app: jellyfin-exporter
-    spec:
-      containers:
-        - name: jellyfin-exporter
-          image: rebelcore/jellyfin-exporter:latest
-          securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            runAsUser: 1000
-            capabilities:
-              drop:
-                - ALL
-          env:
-            - name: JELLYFIN_ADDRESS
-              value: "https://movies.cedevapp.com"
-            - name: JELLYFIN_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: jellyfin-exporter-secret
-                  key: api-key
-          ports:
-            - containerPort: 9594
-              name: metrics
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "10m"
-            limits:
-              memory: "128Mi"
-              cpu: "100m"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: jellyfin-exporter
-  namespace: jellyfin
-  labels:
-    app: jellyfin-exporter
-spec:
-  selector:
-    app: jellyfin-exporter
-  ports:
-    - port: 9594
-      targetPort: 9594
-      name: metrics
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: jellyfin-exporter
-  namespace: jellyfin
-  labels:
-    release: monitoring
-spec:
-  selector:
-    matchLabels:
-      app: jellyfin-exporter
-  endpoints:
-    - port: metrics
-      interval: 30s
-      path: /metrics
