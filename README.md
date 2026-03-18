@@ -6,7 +6,16 @@
 
 ### IaC
 
+ - Pour le déploiement des machines du cluster nous utilisons terraform avec le provider Proxmox
+```
+└── terraform2
+    ├── main.tf
+    ├── terraform.tfvars
+    └── variables.tf
+```
+
 Variable de configuration du cluster
+
 
 ```terraform
 variable "pm_api_url" {
@@ -67,7 +76,7 @@ provider "proxmox" {
 
 ### Provisionning 
 
-Pour le provisionning des machines nous utilisons ansible pour l'installation du cluster 
+- Pour le provisionning des machines nous utilisons ansible pour l'installation du cluster 
 
 ```
 ├── cluster-k3s
