@@ -46,9 +46,9 @@ Le cluster repose sur **K3s** avec des nœuds sous Ubuntu 24.04 LTS.
 
 # IaC
 
-Pour le déploiement des machines du cluster nous utilisons terraform avec le provider Proxmox :
+Pour le déploiement des machines du cluster nous utilisons terraform et ansible avec le provider Proxmox :
 
-<!-- column_layout: [1, 1] -->
+<!-- column_layout: [1, 1, 1] -->
 
 <!-- column: 0 -->
 
@@ -57,6 +57,10 @@ Pour le déploiement des machines du cluster nous utilisons terraform avec le pr
 <!-- column: 1 -->
 
 ![image:width:50%](media/proxmox.png)
+
+<!-- column: 2 -->
+
+![image:width:50%](media/ansible.png)
 
 <!-- reset_layout -->
 
@@ -68,7 +72,7 @@ Pour le déploiement des machines du cluster nous utilisons terraform avec le pr
 
 # Arborescence du Projet
 
-Une structure claire pour la gestion Helm et ArgoCD :
+Une structure claire :
 
 * **helm-apps/** : Contient toutes les définitions d'applications (charts Helm uniquement).
 * **media/** : Assets et schémas d'architecture.
@@ -177,7 +181,7 @@ Nos mises à jour se font sans coupure de service.
   3. Il redirige le trafic, puis détruit l'*ancien* Pod.
   -> Résultat : **Zéro-Downtime** (pas d'arrêt pour l'utilisateur).
 
-* *Evolution possible* : Déploiements incrémentaux **Canary** ou **Blue/Green** via *Argo Rollouts*.
+* *Evolution possible* : Déploiements incrémentaux **Canary** par exemple.
 
 <!-- end_slide -->
 
@@ -244,6 +248,11 @@ DEMO
 ```bash +exec
 kubectl get namespace
 ```
+
+<!-- end_slide -->
+
+DEMO
+===
 
 <!-- end_slide -->
 

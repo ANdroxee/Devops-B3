@@ -12,7 +12,7 @@
 | k3s-wk-01  | Worker          | Ubuntu 24.04 LTS |
 | k3s-wk-02  | Worker          | Ubuntu 24.04 LTS |
 
-Voir la documentation [ici](./IAC.md)
+Voir la documentation [ici](./IAC.md) et les fichiers de configurations complets dans les branches associées : [Terraform](https://github.com/ANdroxee/Devops-B3/tree/terraform) et [Ansible](https://github.com/ANdroxee/Devops-B3/tree/ansible).
 
 ---
 
