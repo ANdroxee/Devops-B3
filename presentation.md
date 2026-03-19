@@ -122,7 +122,7 @@ Nous hébergeons quelques services, tous déployés via **charts Helm** :
 
 * **Jellyfin, Jellyseerr & Jellystat** : Plateforme de streaming, recommandations et statistiques.
 * **n8n** : Automatisation de vos flux de travail.
-* **Grafana, Prometheus, ...** : Observabilité
+* **Grafana, Prometheus, OpenObserve** : Observabilité
 
 ![](media/k9s.png)
 
