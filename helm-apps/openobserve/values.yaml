@@ -26,6 +26,7 @@ config:
   ZO_META_STORE: "sqlite"
   ZO_WEB_URL: "https://openobserve.cedevapp.com"
   ZO_S3_BUCKET_NAME: "o2-dev-bucket"
+  ZO_PROMETHEUS_ENABLED: "true"
 
 service:
   type: ClusterIP
@@ -62,5 +63,5 @@ extraManifests:
         - match: Host(`openobserve.cedevapp.com`)
           kind: Rule
           services:
-            - name: o2-openobserve-standalone
+            - name: openobserve-openobserve-standalone
               port: 5080

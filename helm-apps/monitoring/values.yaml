@@ -107,6 +107,15 @@ prometheus:
       limits:
         memory: 2Gi
         cpu: 1000m
+    remoteWrite:
+      - url: "https://openobserve.cedevapp.com/api/default/prometheus/api/v1/write"
+        basicAuth:
+          username:
+            name: openobserve-remote-auth
+            key: username
+          password:
+            name: openobserve-remote-auth
+            key: password
 
 prometheusOperator:
   enabled: true
