@@ -1,0 +1,66 @@
+image:
+  oss:
+    repository: o2cr.ai/openobserve/openobserve
+    tag: "v0.60.3"
+
+persistence:
+  enabled: true
+  size: 20Gi
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+
+auth:
+  existingRootUserSecret:
+    name: "openobserve-secret"
+    emailKey: "ZO_ROOT_USER_EMAIL"
+    passwordKey: "ZO_ROOT_USER_PASSWORD"
+
+config:
+  ZO_APP_NAME: "OpenObserve"
+  ZO_CLUSTER_NAME: "o2-k3s"
+  ZO_NODE_ROLE: "all"
+  ZO_LOCAL_MODE: "true"
+  ZO_LOCAL_MODE_STORAGE: "disk"
+  ZO_HTTP_PORT: "5080"
+  ZO_META_STORE: "sqlite"
+  ZO_WEB_URL: "https://openobserve.cedevapp.com"
+  ZO_S3_BUCKET_NAME: "o2-dev-bucket"
+
+service:
+  type: ClusterIP
+  http_port: 5080
+  grpc_port: 5081
+
+probes:
+  enabled: true
+  initialDelaySeconds: 10
+  failureThreshold: 3
+  path: /healthz
+
+minio:
+  enabled: false
+
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 250m
+  limits:
+    memory: 2Gi
+    cpu: 1000m
+
+extraManifests:
+  - apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+      name: openobserve
+      namespace: openobserve
+    spec:
+      entryPoints:
+        - web
+      routes:
+        - match: Host(`openobserve.cedevapp.com`)
+          kind: Rule
+          services:
+            - name: o2-openobserve-standalone
+              port: 5080

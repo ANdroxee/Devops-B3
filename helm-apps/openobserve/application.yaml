@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openobserve
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://charts.openobserve.ai
+      chart: openobserve-standalone
+      targetRevision: 0.60.3
+      helm:
+        skipDependencies: true
+        valueFiles:
+          - $values/helm-apps/openobserve/values.yaml
+        extraManifests:
+          - $values/helm-apps/openobserve/network-policy.yaml
+    - repoURL: git@github.com:ANdroxee/Devops-B3.git
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openobserve
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
