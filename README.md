@@ -83,6 +83,8 @@ Chaque application déployée possède un sous dossier dédié dans `helm-apps/`
 | n8n            | n8n        | <img src="media/n8n.png" alt="n8n Logo" width="52" height="32"> |
 | Grafana        | monitoring | <img src="media/grafana.png" alt="Grafana Logo" width="52" height="52"> |
 | Prometheus     | monitoring | <img src="media/prometheus.png" alt="Prometheus Logo" width="52" height="52"> |
+| OpenObserve    | openobserve | <img src="media/open-observe.png" alt="OpenObserve Logo" width="52" height="52"> |
+| ArgoCD         | argocd     | <img src="media/argo-logo.png" alt="ArgoCD Logo" width="52" height="52"> |
 
 ![k9s](media/k9s.png)
 
@@ -130,12 +132,42 @@ kubectl logs kube-bench-[id]
 
 ## Commandes utiles
 
+### kubectl
+
 ```bash
 kubectl get namespaces
 kubectl get pods -A
+kubectl get svc -A
+kubectl get ingress -A
+kubectl get events -A --sort-by=.metadata.creationTimestamp
+
 kubectl get pods -n [namespace]
-kubectl describe -n [namespace] pod
-kubectl describe -n [namespace] pods [pod]
+kubectl logs -n [namespace] [pod] --tail=100 -f
+kubectl describe pod -n [namespace] [pod]
+kubectl exec -it -n [namespace] [pod] -- /bin/sh
+kubectl port-forward -n [namespace] svc/[service] 8080:80
+```
+
+### ArgoCD
+
+```bash
+argocd login [argocd-server]
+argocd app list
+argocd app get [app-name]
+argocd app sync [app-name]
+argocd app diff [app-name]
+argocd app history [app-name]
+argocd app rollback [app-name] [id]
+```
+
+### Helm
+
+```bash
+helm list -A
+helm repo list
+helm upgrade --install [release] [chart] -n [namespace] -f values.yaml
+helm get values [release] -n [namespace]
+helm rollback [release] [revision] -n [namespace]
 ```
 
 ## Nix
@@ -160,6 +192,7 @@ Charts utilisés :
 - [Jellystat PostgreSQL](https://bitnami.com/stack/postgresql/helm) — `oci://registry-1.docker.io/bitnamicharts/postgresql`
 - [n8n chart](https://github.com/8gears/n8n-helm-chart)
 - [Prometheus Grafana Charts](https://github.com/prometheus-community/helm-charts)
+- [OpenObserve chart](https://github.com/openobserve/openobserve-helm-chart)
 
 Apps & tools utilisés :
 - [n8n](https://github.com/n8n-io/n8n)
@@ -174,3 +207,4 @@ Apps & tools utilisés :
 - [k3s](https://github.com/k3s-io/k3s)
 - [kubernetes](https://github.com/kubernetes/kubernetes)
 - [helm](https://github.com/helm/helm)
+- [OpenObserve](https://github.com/openobserve/openobserve)

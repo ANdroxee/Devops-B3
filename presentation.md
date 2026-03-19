@@ -64,7 +64,12 @@ Pour le déploiement des machines du cluster nous utilisons terraform et ansible
 
 <!-- reset_layout -->
 
-### Documentation complète sur Github
+Une structure claire - une branche par déploiement :
+
+- **terraform/** : Contient les configurations pour la création des machines.
+- **ansible/** : Contient les playbooks pour la configuration des machines.
+
+### Documentation complète sur Github 
 
 <!-- end_slide -->
 
@@ -75,28 +80,8 @@ Pour le déploiement des machines du cluster nous utilisons terraform et ansible
 Une structure claire :
 
 * **helm-apps/** : Contient toutes les définitions d'applications (charts Helm uniquement).
-* **media/** : Assets et schémas d'architecture.
-* **flake.nix** : Environnement de développement reproductible.
 
-```bash
-Devops-B3/
-├── helm-apps/
-│   ├── root-app.yaml               # Application "App of Apps" racine
-│   ├── jellyseerr/
-│   │   ├── application.yaml        # ArgoCD Application (chart TrueForge OCI)
-│   │   └── values.yaml             # Valeurs Helm
-│   ├── jellystat/
-│   │   ├── application.yaml        # ArgoCD Application (bjw-s app-template)
-│   │   └── values.yaml             # Valeurs Helm
-│   ├── jellystat-postgres/
-│   │   ├── application.yaml        # ArgoCD Application (Bitnami PostgreSQL)
-│   │   └── values.yaml             # Valeurs Helm
-│   └── monitoring/
-│       ├── application.yaml        # ArgoCD Application (kube-prometheus-stack)
-│       └── values.yaml             # Valeurs Helm
-├── flake.nix                       # configuration nix
-└── README.md
-```
+![image:width:30%](media/helm.png)
 
 <!-- end_slide -->
 
@@ -149,7 +134,7 @@ Nous hébergeons quelques services, tous déployés via **charts Helm** :
 
 Pour respecter la nécessité DevOps de "surveiller" son infrastructure :
 
-<!-- column_layout: [1, 1] -->
+<!-- column_layout: [1, 1, 1] -->
 
 <!-- column: 0 -->
 
@@ -164,6 +149,13 @@ Moteur de collecte de métriques. Il "scrape" l'état de notre cluster K3s (util
 Outil de visualisation. Offre des *Dashboards* permettant d'être proactif sur les incidents.
 
 ![image:width:30%](media/grafana.png)
+
+<!-- column: 2 -->
+
+**OpenObserve**
+Plateforme d'observabilité unifiée (logs, traces, métriques). Nous l'utilisons pour collecter les logs de nos applications et du cluster.
+
+![image:width:30%](media/open-observe.png)
 
 <!-- reset_layout -->
 
@@ -183,6 +175,8 @@ Nos mises à jour se font sans coupure de service.
 
 * *Evolution possible* : Déploiements incrémentaux **Canary** par exemple.
 
+![image:width:30%](media/argo-logo.png)
+
 <!-- end_slide -->
 
 <!-- font_size: 2 -->
@@ -194,6 +188,8 @@ Nous intégrons la sécurité à plusieurs niveaux :
 * **CI (GitHub Actions) + Trivy** : Scan automatique des vulnérabilités et erreurs de configuration (IaC) à chaque Push/PR.
 * **Audit Kubernetes** : Utilisation de `kube-bench` pour vérifier la sécurité du cluster face aux standards.
 * **Gestion des secrets** : Manuel (Opaque) pour l'instant, avec évolution prévue vers Vault / SOPS.
+
+![image:width:40%](media/kube-bench.png)
 
 <!-- end_slide -->
 
@@ -253,6 +249,74 @@ kubectl get namespace
 
 DEMO
 ===
+
+<!-- end_slide -->
+
+<!-- font_size: 2 -->
+
+Visuel de l'interface ArgoCD
+===
+
+![image:width:100%](media/view-argo.png)
+
+
+<!-- end_slide -->
+
+<!-- font_size: 2 -->
+
+Visuel d'un deploiement ArgoCD
+===
+
+![image:width:100%](media/view-argo-deploy.png)
+
+
+<!-- end_slide -->
+
+<!-- font_size: 2 -->
+
+Visuel d'un dashboard Grafana
+===
+
+![image:width:100%](media/view-grafana.png)
+
+<!-- end_slide -->
+
+<!-- font_size: 2 -->
+
+Visuel de l'interface OpenObserve
+===
+
+![image:width:100%](media/view-openobserve.png)
+
+
+<!-- end_slide -->
+
+<!-- font_size: 2 -->
+
+Jellyfin
+===
+
+![image:width:100%](media/view-jellyfin.png)
+
+
+<!-- end_slide -->
+
+<!-- font_size: 2 -->
+
+Jellyseerr
+===
+
+![image:width:100%](media/view-jellyseerr.png)
+
+
+<!-- end_slide -->
+
+<!-- font_size: 2 -->
+
+Jellystat
+===
+
+![image:width:100%](media/view-jellystat.png)
 
 <!-- end_slide -->
 
