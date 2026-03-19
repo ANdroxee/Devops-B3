@@ -10,11 +10,8 @@ spec:
       chart: openobserve-standalone
       targetRevision: 0.60.3
       helm:
-        skipDependencies: true
         valueFiles:
           - $values/helm-apps/openobserve/values.yaml
-        extraManifests:
-          - $values/helm-apps/openobserve/network-policy.yaml
     - repoURL: git@github.com:ANdroxee/Devops-B3.git
       targetRevision: HEAD
       ref: values
