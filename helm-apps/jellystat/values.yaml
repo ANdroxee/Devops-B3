@@ -22,11 +22,11 @@ controllers:
                 key: JWT_SECRET
         resources:
           requests:
-            cpu: 25m
-            memory: 64Mi
+            cpu: 50m
+            memory: 128Mi
           limits:
-            cpu: 200m
-            memory: 256Mi
+            cpu: 500m
+            memory: 2512Mi
 
 service:
   main:
